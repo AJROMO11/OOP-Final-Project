@@ -4,8 +4,6 @@
 - (Optional) Any other notes for the TA
 */
 
-//testing here
-
 public class FinalProject {
 
 	public static void main(String[] args) {
@@ -89,7 +87,18 @@ class Student extends Person{
 	
 	@Override
 	public void print() {
-		//need to complete this
+		System.out.println("Student Name: " + getFullName() + 
+							"\tID: " + getId() + "\nGPA: " + gpa + 
+							"\nCredit Hours: " + creditHours +
+							"\nTuition (after discount if applicable): " + calculateTuition());
+	}
+
+	public double calculateTuition() {
+		double tuition = 236.45 * creditHours + 52;
+		if(gpa >= 3.85) {
+			tuition *= 0.75;
+		}
+		return tuition;
 	}
 	
 }
