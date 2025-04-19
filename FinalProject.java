@@ -120,7 +120,10 @@ class Faculty extends Employee{
 	
 	@Override
 	public void print() {
-		//need to complete this
+		System.out.print("Faculty Information\nFull Name: " + getFullName() +
+				 "\nID: " + getId() +
+				 "\nDepartment: " + getDepartment() +
+				 "\nRank: " + rank);
 	}
 }
 
@@ -141,6 +144,9 @@ class Staff extends Employee{
 	
 	@Override
 	public void print() {
-		//need to complete this
+		System.out.print("Staff Information\nFull Name: " + getFullName() +
+				 "\nID: " + getId() +
+				 "\nDepartment: " + getDepartment() +
+				 "\nStatus: " + status);
 	}
 }
