@@ -6,13 +6,17 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Comparator;
+import java.io.*;
+import java.time.LocalDate;
 
 public class FinalProject {
 
 	public static void main(String[] args) {
 		boolean exitProgram = false, idFound = false;
-		String option, fullNameInput, idInput, departmentInput, rankInput, statusInput;
-		int i;
+		String option, fullNameInput, idInput, departmentInput, rankInput, statusInput, helpInput;
+		double gpaInput = 0.0;
+		int i, creditInput = 0;
 		Scanner inputScanner = new Scanner (System.in);
 		ArrayList<Person> PersonCollection = new ArrayList<Person>(100);
 		
@@ -31,7 +35,10 @@ public class FinalProject {
 			System.out.print("Enter your selection: ");
 			
 			option = inputScanner.nextLine();
+			
+			// Faculty input
 			if (option.compareTo("1") == 0) {
+				
 				i = 0;
 				idFound = false;
 				
@@ -124,11 +131,159 @@ public class FinalProject {
 					System.out.println("Faculty added!");
 					break;
 				}
-			} else if (option.compareTo("2") == 0) {
+			} //student info
+			else if (option.compareTo("2") == 0) {
+				i = 0;
 				
-			} else if (option.compareTo("3") == 0) {
-				
-			} else if (option.compareTo("4") == 0) {
+				// Looping until 3 invalid tries completed
+				while (i < 3) {
+					System.out.print("Enter Student info: \n\tName: ");
+					fullNameInput = inputScanner.nextLine();
+					
+					System.out.print("\tID: ");
+					idInput = inputScanner.nextLine();
+					
+					// Checking for invalid id format
+					try {
+						if (idInput.length() != 6) {
+							throw new idFormatException();
+						} 
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(0, 1).toString().matches("[a-zA-Z]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(2, 5).toString().matches("[0-9]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					
+					// Checking for existing id
+					try {
+						for (Person existingPerson : PersonCollection) {
+							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0) {
+								idFound = true;
+								break;
+							}
+						}
+						if (idFound) {
+							throw new duplicateIDException();
+						}
+					} catch (duplicateIDException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					
+					// Checking for invalid GPA input
+					System.out.print("\tGPA: : ");
+					if(inputScanner.hasNextDouble()){
+						gpaInput = inputScanner.nextDouble();
+					}
+					else{
+						System.out.println("That's not a number. \nTry again!");
+						helpInput = inputScanner.nextLine();
+						gpaInput = 0.0;
+						i++;
+						continue;
+					}
+					if(gpaInput > 4.0){
+						inputScanner.nextLine();
+						System.out.println("GPA has to be 4.0 or less. \nTry again!");
+						i++;
+						continue;
+					}
+
+					// Checking for invalid Credit hours input
+					System.out.print("\tCredit hours: ");
+					if(inputScanner.hasNextInt()){
+						creditInput = inputScanner.nextInt();
+						inputScanner.nextLine();
+					}
+					else{
+						helpInput = inputScanner.nextLine();
+						System.out.println("That's not a number. \nTry again!");
+						creditInput = 0;
+						i++;
+						continue;
+					}
+					
+					PersonCollection.add(new Student(fullNameInput, idInput, gpaInput, creditInput));
+					System.out.println("Student added!");
+					break;
+				}
+			} //tuition invoice
+			else if (option.compareTo("3") == 0) {
+				i = 0;
+				idFound = false;
+
+				while (i < 3) {
+					System.out.print("Enter the student's ID: ");
+					idInput = inputScanner.nextLine();
+					// Checking for invalid id format
+					try {
+						if (idInput.length() != 6) {
+							throw new idFormatException();
+						} 
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(0, 1).toString().matches("[a-zA-Z]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(2, 5).toString().matches("[0-9]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+
+					for (Person p : PersonCollection){
+						if(p.getId().equalsIgnoreCase(idInput)){
+							System.out.println("Tuition invoice for " + p.getFullName() + ":");
+							System.out.println("-----------------------------------");
+							p.print();
+							System.out.println("-----------------------------------\n");
+							idFound = true;
+							i++;
+							break;
+						}
+					}
+					if(!idFound){
+						i++;
+						System.out.println("No student by that ID number. \nTry Again!");
+						continue;
+					}
+					break;
+				}
+			}
+			// Print faculty info
+			else if (option.compareTo("4") == 0) {
 				i = 0;
 				idFound = false;
 				while (i < 3) {
@@ -154,7 +309,9 @@ public class FinalProject {
 						continue;
 					}
 				}
-			} else if (option.compareTo("5") == 0) {
+			} 
+			// Staff member info
+			else if (option.compareTo("5") == 0) {
 				i = 0;
 				idFound = false;
 				// Looping until 3 invalid tries completed
@@ -246,7 +403,9 @@ public class FinalProject {
 					System.out.println("Staff added!");
 					break;
 				}
-			} else if (option.compareTo("6") == 0) {
+			}
+			// Print staff member info
+			else if (option.compareTo("6") == 0) {
 				i = 0;
 				idFound = false;
 				while (i < 3) {
@@ -272,7 +431,9 @@ public class FinalProject {
 						continue;
 					}
 				}
-			} else if (option.compareTo("7") == 0) {
+			}
+			// Delete person
+			else if (option.compareTo("7") == 0) {
 				i = 0;
 				idFound = false;
 				while (i < 3) {
@@ -298,13 +459,182 @@ public class FinalProject {
 						continue;
 					}
 				}
-			} else if (option.compareTo("8") == 0) {
-				
+			}
+			
+			// Exit program
+			else if (option.compareTo("8") == 0) {
 				exitProgram = true;
+				i = 0;
+				
+				while(i < 3) {
+					System.out.print("Would you like to create the report? (Y/N): ");
+					String reportInput = inputScanner.nextLine();
+				
+					if(reportInput.equalsIgnoreCase("n")) {
+						System.out.println("Goodbye!");
+						break;
+					}
+					else if(!reportInput.equalsIgnoreCase("y")) {
+						System.out.println("Invalid Entry. Try again!\n");
+						i++;
+						continue;
+					}
+					System.out.print("Would you like to sort your students by GPA or name? (Enter 1 for GPA. Enter 2 for name): ");
+					String sortInput = inputScanner.nextLine();
+					
+					PrintStream originalOut = System.out;
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+					PrintStream captureStream = new PrintStream(outputStream);
+					System.setOut(captureStream);
+					
+					System.out.println("Report created on " + LocalDate.now());
+					System.out.println("************************************");
+					System.out.println("Faculty Members");
+					System.out.println("------------------");
+			        
+			        ArrayList<Faculty> facultyList = new ArrayList<>();
+			        
+			        // Collect all Faculty members
+			        for (Person p : PersonCollection) {
+			            if (p instanceof Faculty) {
+			                facultyList.add((Faculty) p);
+			            }
+			        }
+			        
+			        // Sort the faculty list by department
+			        facultyList.sort(Comparator.comparing(Faculty::getDepartment));
+			        
+			        int k = 0;
+			        // Replace original faculty members in the main collection with sorted faculty list
+			        for (int j = 0; j < PersonCollection.size(); j++) {
+			            if (PersonCollection.get(j) instanceof Faculty) {
+			                PersonCollection.set(j, facultyList.get(k));
+			                k++;
+			            }
+			        }
+			        // Print sorted faculty members
+			        int num = 0;
+			        for (Person p : PersonCollection) {
+			            if (p instanceof Faculty) {
+			            	num++;
+			            	System.out.println(num + ". " + p.getFullName());
+			            	System.out.println("ID: " + p.getId());
+			            	System.out.println(((Faculty)p).getRank() + ", " + ((Faculty)p).getDepartment());
+			            }
+			        }
+			        
+			        
+			        
+			        System.out.println("Staff Members");
+					System.out.println("------------------");
+			        
+					num = 0;
+			        for (Person p : PersonCollection) {
+			            if (p instanceof Staff) {
+			            	num++;
+			            	System.out.println(num + ". " + p.getFullName());
+			            	System.out.println("ID: " + p.getId());
+			            	System.out.println(((Staff)p).getDepartment() + ", " + ((Staff)p).getStatus());
+			            }
+			        }
+			        
+			        //invalid input
+			        if(!sortInput.equals("1") && !sortInput.equals("2")) {
+			        	System.out.println("Need to input 1 or 2. \nTry again!");
+			        	i++;
+			        	continue;
+			        }
+			        //sort by name
+			        else if(sortInput.compareTo("2") == 0) {
+			        	System.out.println("Students (Sorted by name)");
+						System.out.println("---------------------------");
+						
+			        	ArrayList<Student> studentList = new ArrayList<>();
+				        
+				        // Collect all Faculty members
+				        for (Person p : PersonCollection) {
+				            if (p instanceof Student) {
+				                studentList.add((Student) p);
+				            }
+				        }
+				        
+				        // Sort the faculty list by department
+				        studentList.sort(Comparator.comparing(Student::getFullName));
+				        
+				        k = 0;
+				        // Replace original faculty members in the main collection with sorted faculty list
+				        for (int j = 0; j < PersonCollection.size(); j++) {
+				            if (PersonCollection.get(j) instanceof Student) {
+				                PersonCollection.set(j, studentList.get(k));
+				                k++;
+				            }
+				        }
+				        // Print sorted faculty members
+				        num = 0;
+				        for (Person p : PersonCollection) {
+				            if (p instanceof Student) {
+				            	num++;
+				            	System.out.println(num + ". " + p.getFullName());
+				            	System.out.println("ID: " + p.getId());
+				            	System.out.println("GPA: " + ((Student)p).getGpa());
+				            	System.out.println("Credit hours: " + ((Student)p).getCreditHours() + "\n");
+				            }
+				        }
+			        }
+			        //gpa sort
+			        else {
+			        	
+			        	System.out.println("Students (Sorted by GPA)");
+						System.out.println("---------------------------");
+			        	ArrayList<Student> studentList = new ArrayList<>();
+				        
+				        // Collect all students
+				        for (Person p : PersonCollection) {
+				            if (p instanceof Student) {
+				                studentList.add((Student) p);
+				            }
+				        }
+				        
+				        // Sort the students by GPA
+				        studentList.sort(Comparator.comparing(Student::getGpa).reversed());
+				        
+				        k = 0;
+				        // Replace original students in the main collection with sorted students
+				        for (int j = 0; j < PersonCollection.size(); j++) {
+				            if (PersonCollection.get(j) instanceof Student) {
+				                PersonCollection.set(j, studentList.get(k));
+				                k++;
+				            }
+				        }
+				        // Print sorted students
+				        num = 0;
+				        for (Person p : PersonCollection) {
+				            if (p instanceof Student) {
+				            	num++;
+				            	System.out.println(num + ". " + p.getFullName());
+				            	System.out.println("ID: " + p.getId());
+				            	System.out.println("GPA: " + ((Student)p).getGpa());
+				            	System.out.println("Credit hours: " + ((Student)p).getCreditHours() + "\n");
+				            }
+				        }
+			        }
+					
+			        
+			       
+					
+					System.setOut(originalOut);
+					
+					try (FileWriter writer = new FileWriter("report.txt")) {
+						writer.write(outputStream.toString());
+						System.out.println("Output written to report.txt");
+					} catch(IOException e) {
+						System.out.println("Error writing to file: " + e.getMessage());
+					}
+					break;
+				}
 			}
 		}
 	}
-	
 }
 
 abstract class Person{
@@ -381,10 +711,13 @@ class Student extends Person{
 	
 	@Override
 	public void print() {
-		System.out.println("Student Name: " + getFullName() + 
-						   "\tID: " + getId() + "\nGPA: " + gpa + 
-						   "\nCredit Hours: " + creditHours +
-						   "\nTuition (after discount if applicable): " + calculateTuition());
+				System.out.println(getFullName() + "\t" + getId() + "\nCredit Hours: " + creditHours + " ($236.45/credit hour)"
+						+ "\nFees: $52");
+				System.out.printf("Total payment (after discount): %.2f\n", calculateTuition());
+				System.out.println("Student Name: " + getFullName() + 
+								   "\tID: " + getId() + "\nGPA: " + gpa + 
+								   "\nCredit Hours: " + creditHours +
+								   "\nTuition (after discount if applicable): " + calculateTuition());
 	}
 
 	public double calculateTuition() {
