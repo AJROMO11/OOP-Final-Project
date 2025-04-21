@@ -33,6 +33,7 @@ public class FinalProject {
 			option = inputScanner.nextLine();
 			if (option.compareTo("1") == 0) {
 				i = 0;
+				idFound = false;
 				
 				// Looping until 3 invalid tries completed
 				while (i < 3) {
@@ -121,6 +122,7 @@ public class FinalProject {
 					
 					PersonCollection.add(new Faculty(fullNameInput, idInput, departmentInput, rankInput));
 					System.out.println("Faculty added!");
+					break;
 				}
 			} else if (option.compareTo("2") == 0) {
 				
@@ -128,6 +130,7 @@ public class FinalProject {
 				
 			} else if (option.compareTo("4") == 0) {
 				i = 0;
+				idFound = false;
 				while (i < 3) {
 					System.out.print("Enter the faculty ID: ");
 					idInput = inputScanner.nextLine();
@@ -139,7 +142,9 @@ public class FinalProject {
 								break;
 							}
 						}
-						if (!idFound) {
+						if (idFound) {
+							break;
+						} else {
 							throw new noFacultyFoundException();
 						}
 					} catch (noFacultyFoundException e) {
@@ -151,7 +156,7 @@ public class FinalProject {
 				}
 			} else if (option.compareTo("5") == 0) {
 				i = 0;
-				
+				idFound = false;
 				// Looping until 3 invalid tries completed
 				while (i < 3) {
 					System.out.print("Enter staff info:\nName: ");
@@ -239,9 +244,11 @@ public class FinalProject {
 					
 					PersonCollection.add(new Staff(fullNameInput, idInput, departmentInput, statusInput));
 					System.out.println("Staff added!");
+					break;
 				}
 			} else if (option.compareTo("6") == 0) {
 				i = 0;
+				idFound = false;
 				while (i < 3) {
 					System.out.print("Enter the staff ID: ");
 					idInput = inputScanner.nextLine();
@@ -253,7 +260,9 @@ public class FinalProject {
 								break;
 							}
 						}
-						if (!idFound) {
+						if (idFound) {
+							break;
+						} else {
 							throw new noStaffFoundException();
 						}
 					} catch (noStaffFoundException e) {
@@ -265,6 +274,7 @@ public class FinalProject {
 				}
 			} else if (option.compareTo("7") == 0) {
 				i = 0;
+				idFound = false;
 				while (i < 3) {
 					System.out.print("Enter the person's ID: ");
 					idInput = inputScanner.nextLine();
@@ -276,7 +286,9 @@ public class FinalProject {
 								break;
 							}
 						}
-						if (!idFound) {
+						if (idFound) {
+							break;
+						} else {
 							throw new noPersonFoundException();
 						}
 					} catch (noPersonFoundException e) {
@@ -299,7 +311,7 @@ abstract class Person{
 	private String fullName;
 	private String id;
 	
-	public Person(String fullname, String id) {
+	public Person(String fullName, String id) {
 		setFullName(fullName);
 		setId(id);
 	}
