@@ -5,19 +5,18 @@
 */
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Scanner;
+import java.util.Comparator;
 import java.io.*;
 import java.time.LocalDate;
 
 public class FinalProject {
 
 	public static void main(String[] args) {
-		boolean exitProgram = false, duplicateID = false;
+		boolean exitProgram = false, idFound = false;
 		String option, fullNameInput, idInput, departmentInput, rankInput, statusInput, helpInput;
 		double gpaInput = 0.0;
-		int creditInput = 0;
-		int i, flag = 0;
+		int i, creditInput = 0;
 		Scanner inputScanner = new Scanner (System.in);
 		ArrayList<Person> PersonCollection = new ArrayList<Person>(100);
 		
@@ -36,13 +35,16 @@ public class FinalProject {
 			System.out.print("Enter your selection: ");
 			
 			option = inputScanner.nextLine();
-			//faculty input
+			
+			// Faculty input
 			if (option.compareTo("1") == 0) {
+				
 				i = 0;
+				idFound = false;
 				
 				// Looping until 3 invalid tries completed
 				while (i < 3) {
-					System.out.print("Enter faculty info:\n\tName: ");
+					System.out.print("Enter faculty info:\nName: ");
 					fullNameInput = inputScanner.nextLine();
 					System.out.print("ID: ");
 					idInput = inputScanner.nextLine();
@@ -80,11 +82,11 @@ public class FinalProject {
 					try {
 						for (Person existingPerson : PersonCollection) {
 							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0) {
-								duplicateID = true;
+								idFound = true;
 								break;
 							}
 						}
-						if (duplicateID) {
+						if (idFound) {
 							throw new duplicateIDException();
 						}
 					} catch (duplicateIDException e) {
@@ -127,9 +129,9 @@ public class FinalProject {
 					
 					PersonCollection.add(new Faculty(fullNameInput, idInput, departmentInput, rankInput));
 					System.out.println("Faculty added!");
+					break;
 				}
-			} 
-			//student info
+			} //student info
 			else if (option.compareTo("2") == 0) {
 				i = 0;
 				
@@ -174,11 +176,11 @@ public class FinalProject {
 					try {
 						for (Person existingPerson : PersonCollection) {
 							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0) {
-								duplicateID = true;
+								idFound = true;
 								break;
 							}
 						}
-						if (duplicateID) {
+						if (idFound) {
 							throw new duplicateIDException();
 						}
 					} catch (duplicateIDException e) {
@@ -224,11 +226,10 @@ public class FinalProject {
 					System.out.println("Student added!");
 					break;
 				}
-			} 
-			//tuition invoice
+			} //tuition invoice
 			else if (option.compareTo("3") == 0) {
 				i = 0;
-				flag = 0;
+				idFound = false;
 
 				while (i < 3) {
 					System.out.print("Enter the student's ID: ");
@@ -268,20 +269,20 @@ public class FinalProject {
 							System.out.println("-----------------------------------");
 							p.print();
 							System.out.println("-----------------------------------\n");
-							flag = 1;
+							idFound = true;
 							i++;
 							break;
 						}
 					}
-					if(flag != 1){
+					if(!idFound){
 						i++;
 						System.out.println("No student by that ID number. \nTry Again!");
 						continue;
 					}
 					break;
 				}
-			} 
-			//print faculty info
+			}
+			// Print faculty info
 			else if (option.compareTo("4") == 0) {
 				i = 0;
 				idFound = false;
@@ -311,11 +312,101 @@ public class FinalProject {
 					}
 				}
 			} 
-			//staff member info
+			// Staff member info
 			else if (option.compareTo("5") == 0) {
-				// Implement staff info input here
-			} 
-			//print staff member info
+				i = 0;
+				idFound = false;
+				// Looping until 3 invalid tries completed
+				while (i < 3) {
+					System.out.print("Enter staff info:\nName: ");
+					fullNameInput = inputScanner.nextLine();
+					System.out.print("ID: ");
+					idInput = inputScanner.nextLine();
+					
+					// Checking for invalid id format
+					try {
+						if (idInput.length() != 6) {
+							throw new idFormatException();
+						} 
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(0, 1).toString().matches("[a-zA-Z]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					try {
+						if (!idInput.subSequence(2, 5).toString().matches("[0-9]+")) {
+							throw new idFormatException();
+						}
+					} catch (idFormatException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					
+					// Checking for existing id
+					try {
+						for (Person existingPerson : PersonCollection) {
+							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0) {
+								idFound = true;
+								break;
+							}
+						}
+						if (idFound) {
+							throw new duplicateIDException();
+						}
+					} catch (duplicateIDException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					System.out.print("Department: ");
+					departmentInput = inputScanner.nextLine();
+					
+					// Checking for invalid department input
+					try {
+						if (departmentInput.compareToIgnoreCase("Mathematics") != 0) {
+							if (departmentInput.compareToIgnoreCase("Engineering") != 0) {
+								if (departmentInput.compareToIgnoreCase("English") != 0) {
+									throw new departmentInputException();
+								}
+							}
+						}
+					} catch (departmentInputException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					System.out.print("Status: ");
+					statusInput = inputScanner.nextLine();
+					
+					// Checking for invalid status input
+					try {
+						if (statusInput.compareToIgnoreCase("Part-time") != 0) {
+							if (statusInput.compareToIgnoreCase("Full-time") != 0) {
+								throw new statusInputException();
+							}
+						}
+					} catch (statusInputException e) {
+						e.printMessage();
+						i = i + 1;
+						continue;
+					}
+					
+					PersonCollection.add(new Staff(fullNameInput, idInput, departmentInput, statusInput));
+					System.out.println("Staff added!");
+					break;
+				}
+			}
+			// Print staff member info
 			else if (option.compareTo("6") == 0) {
 				i = 0;
 				idFound = false;
@@ -347,9 +438,34 @@ public class FinalProject {
 			}
 			// Delete person
 			else if (option.compareTo("7") == 0) {
-				// Implement delete functionality here
-			} 
-			//exit program
+				i = 0;
+				idFound = false;
+				while (i < 3) {
+					System.out.print("Enter the person's ID: ");
+					idInput = inputScanner.nextLine();
+					try {
+						for (Person existingPerson : PersonCollection) {
+							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0) {
+								idFound = true;
+								PersonCollection.remove(existingPerson);
+								break;
+							}
+						}
+						if (idFound) {
+							break;
+						} else {
+							throw new noPersonFoundException();
+						}
+					} catch (noPersonFoundException e) {
+						e.printMessage();
+						System.out.println(idInput);
+						i = i + 1;
+						continue;
+					}
+				}
+			}
+			
+			// Exit program
 			else if (option.compareTo("8") == 0) {
 				exitProgram = true;
 				i = 0;
@@ -519,25 +635,24 @@ public class FinalProject {
 						System.out.println("Error writing to file: " + e.getMessage());
 					}
 					break;
+				}
 			}
 		}
 	}
 }
-}
-	
-abstract class Person {
+
+abstract class Person{
 	private String fullName;
 	private String id;
-
+	
 	public Person(String fullName, String id) {
 		setFullName(fullName);
 		setId(id);
 	}
-
+	
 	public String getFullName() {
 		return fullName;
 	}
-
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
@@ -545,63 +660,59 @@ abstract class Person {
 	public String getId() {
 		return id;
 	}
-
 	public void setId(String id) {
 		this.id = id;
 	}
 
 	public abstract void print();
-
+	
 }
 
-abstract class Employee extends Person {
+abstract class Employee extends Person{
 	private String department;
-
+	
 	public Employee(String fullName, String id, String department) {
-		super(fullName, id);
-		setDepartment(department);
-	}
+        super(fullName, id);
+        setDepartment(department);
+    }
 
 	public String getDepartment() {
 		return department;
 	}
-
 	public void setDepartment(String department) {
 		this.department = department;
 	}
-
+	
 }
 
-class Student extends Person {
+class Student extends Person{
 	private double gpa;
 	private int creditHours;
-
-	public Student(String fullName, String id, double gpa, int creditHours) {
-		super(fullName, id);
-		this.gpa = gpa;
-		this.creditHours = creditHours;
-	}
-
-	public Student(String fullName, String id) {
-		this(fullName, id, 0.0, 0);
-	}
-
+	
+    public Student(String fullName, String id, double gpa, int creditHours) {
+        super(fullName, id);
+        this.gpa = gpa;
+        this.creditHours = creditHours;
+    }
+    
+    public Student(String fullName, String id) {
+    	this(fullName, id, 0.0, 0);
+    }
+	
 	public double getGpa() {
 		return gpa;
 	}
-
 	public void setGpa(double gpa) {
 		this.gpa = gpa;
 	}
-
-	public double getCreditHours() {
+	
+	public int getCreditHours() {
 		return creditHours;
 	}
-
 	public void setCreditHours(int creditHours) {
 		this.creditHours = creditHours;
 	}
-
+	
 	@Override
 	public void print() {
 				System.out.println(getFullName() + "\t" + getId() + "\nCredit Hours: " + creditHours + " ($236.45/credit hour)"
@@ -611,17 +722,17 @@ class Student extends Person {
 
 	public double calculateTuition() {
 		double tuition = 236.45 * creditHours + 52;
-		if (gpa >= 3.85) {
+		if(gpa >= 3.85) {
 			tuition *= 0.75;
 		}
 		return tuition;
 	}
-
+	
 }
 
-class Faculty extends Employee {
+class Faculty extends Employee{
 	private String rank;
-
+	
 	public Faculty(String fullName, String id, String department, String rank) {
 		super(fullName, id, department);
 		setRank(rank);
@@ -630,11 +741,10 @@ class Faculty extends Employee {
 	public String getRank() {
 		return rank;
 	}
-
 	public void setRank(String rank) {
 		this.rank = rank;
 	}
-
+	
 	@Override
 	public void print() {
 		System.out.println("Full Name: " + getFullName() +
@@ -644,10 +754,10 @@ class Faculty extends Employee {
 	}
 }
 
-class Staff extends Employee {
+class Staff extends Employee{
 	private String status;
-
-	public Staff(String fullName, String id, String department, String status) {
+	
+	public Staff(String fullName, String id, String department, String status){
 		super(fullName, id, department);
 		setStatus(status);
 	}
@@ -655,11 +765,10 @@ class Staff extends Employee {
 	public String getStatus() {
 		return status;
 	}
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
 	@Override
 	public void print() {
 		System.out.println("Full Name: " + getFullName() +
@@ -697,9 +806,27 @@ class rankInputException extends Exception {
 	}
 }
 
+class noFacultyFoundException extends Exception {
+	public void printMessage() {
+		System.out.print("Sorry no faculty with ID = ");
+	}
+}
+
 class statusInputException extends Exception {
 	public void printMessage() {
-		System.out.println("Invalid status input. Must be Full-time or Part-Time");
+		System.out.println("Invalid rank input. Must be part-time or full-time");
 		System.out.println("\n\nTry again!");
+	}
+}
+
+class noStaffFoundException extends Exception {
+	public void printMessage() {
+		System.out.print("Sorry no staff with ID = ");
+	}
+}
+
+class noPersonFoundException extends Exception {
+	public void printMessage() {
+		System.out.print("Sorry no person with ID = ");
 	}
 }
