@@ -188,7 +188,7 @@ public class FinalProject {
 					}
 					
 					// Checking for invalid GPA input
-					System.out.print("\tGPA: : ");
+					System.out.print("\tGPA: ");
 					if(inputScanner.hasNextDouble()){
 						gpaInput = inputScanner.nextDouble();
 					}
@@ -263,7 +263,7 @@ public class FinalProject {
 					}
 
 					for (Person p : PersonCollection){
-						if(p.getId().equalsIgnoreCase(idInput)){
+						if(p.getId().equalsIgnoreCase(idInput) && p instanceof Student){
 							System.out.println("Tuition invoice for " + p.getFullName() + ":");
 							System.out.println("-----------------------------------");
 							p.print();
@@ -283,7 +283,33 @@ public class FinalProject {
 			} 
 			//print faculty info
 			else if (option.compareTo("4") == 0) {
-				// Implement faculty printing here
+				i = 0;
+				idFound = false;
+				while (i < 3) {
+					System.out.print("Enter the faculty ID: ");
+					idInput = inputScanner.nextLine();
+					try {
+						for (Person existingPerson : PersonCollection) {
+							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0 && existingPerson instanceof Faculty) {
+								idFound = true;
+								System.out.println("Faculty Information");
+								System.out.println("---------------------------");
+								existingPerson.print();
+								break;
+							}
+						}
+						if (idFound) {
+							break;
+						} else {
+							throw new noFacultyFoundException();
+						}
+					} catch (noFacultyFoundException e) {
+						e.printMessage();
+						System.out.println(idInput);
+						i = i + 1;
+						continue;
+					}
+				}
 			} 
 			//staff member info
 			else if (option.compareTo("5") == 0) {
@@ -291,9 +317,35 @@ public class FinalProject {
 			} 
 			//print staff member info
 			else if (option.compareTo("6") == 0) {
-				// Implement staff printing here
-			} 
-			//delete person
+				i = 0;
+				idFound = false;
+				while (i < 3) {
+					System.out.print("Enter the staff ID: ");
+					idInput = inputScanner.nextLine();
+					try {
+						for (Person existingPerson : PersonCollection) {
+							if (idInput.compareToIgnoreCase(existingPerson.getId()) == 0 && existingPerson instanceof Staff) {
+								idFound = true;
+								System.out.println("Staff Member Information");
+								System.out.println("---------------------------");
+								existingPerson.print();
+								break;
+							}
+						}
+						if (idFound) {
+							break;
+						} else {
+							throw new noStaffFoundException();
+						}
+					} catch (noStaffFoundException e) {
+						e.printMessage();
+						System.out.println(idInput);
+						i = i + 1;
+						continue;
+					}
+				}
+			}
+			// Delete person
 			else if (option.compareTo("7") == 0) {
 				// Implement delete functionality here
 			} 
@@ -355,7 +407,7 @@ public class FinalProject {
 			            	num++;
 			            	System.out.println(num + ". " + p.getFullName());
 			            	System.out.println("ID: " + p.getId());
-			            	System.out.println(((Faculty)p).getRank() + ", " + ((Faculty)p).getDepartment());
+			            	System.out.println(((Faculty)p).getRank() + ", " + ((Faculty)p).getDepartment() + "\n");
 			            }
 			        }
 			        
@@ -370,7 +422,7 @@ public class FinalProject {
 			            	num++;
 			            	System.out.println(num + ". " + p.getFullName());
 			            	System.out.println("ID: " + p.getId());
-			            	System.out.println(((Staff)p).getDepartment() + ", " + ((Staff)p).getStatus());
+			            	System.out.println(((Staff)p).getDepartment() + ", " + ((Staff)p).getStatus() + "\n");
 			            }
 			        }
 			        
@@ -462,7 +514,7 @@ public class FinalProject {
 					
 					try (FileWriter writer = new FileWriter("report.txt")) {
 						writer.write(outputStream.toString());
-						System.out.println("Output written to report.txt");
+						System.out.println("Report created and saved to report.txt! \n\nGoodbye!");
 					} catch(IOException e) {
 						System.out.println("Error writing to file: " + e.getMessage());
 					}
@@ -552,9 +604,9 @@ class Student extends Person {
 
 	@Override
 	public void print() {
-		System.out.println(getFullName() + "\t" + getId() + "\nCredit Hours: " + creditHours + " ($236.45/credit hour)"
-				+ "\nFees: $52");
-		System.out.printf("Total payment (after discount): %.2f\n", calculateTuition());
+				System.out.println(getFullName() + "\t" + getId() + "\nCredit Hours: " + creditHours + " ($236.45/credit hour)"
+						+ "\nFees: $52");
+				System.out.printf("Total payment (after discount): %.2f\n", calculateTuition());
 	}
 
 	public double calculateTuition() {
@@ -585,8 +637,10 @@ class Faculty extends Employee {
 
 	@Override
 	public void print() {
-		System.out.println("Faculty Information\nFull Name: " + getFullName() + "\nID: " + getId() + "\nDepartment: "
-				+ getDepartment() + "\nRank: " + rank);
+		System.out.println("Full Name: " + getFullName() +
+						 "\nID: " + getId() +
+						 "\nDepartment: " + getDepartment() +
+						 "\nRank: " + rank);
 	}
 }
 
@@ -608,8 +662,10 @@ class Staff extends Employee {
 
 	@Override
 	public void print() {
-		System.out.println("Staff Information\nFull Name: " + getFullName() + "\nID: " + getId() + "\nDepartment: "
-				+ getDepartment() + "\nStatus: " + status);
+		System.out.println("Full Name: " + getFullName() +
+				 		   "\nID: " + getId() +
+				 		   "\nDepartment: " + getDepartment() +
+				 		   "\nStatus: " + status);
 	}
 }
 
