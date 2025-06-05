@@ -47,10 +47,10 @@ At exit, the user is prompted to save a report of all personnel.
 
 ## Sample Output
 
-Julia  Alvarez ju1254
-Credit Hours: 7 ($236.45)
-Fees: $52
-Total payment (after discount): &1,707.15
+Julia  Alvarez ju1254  
+Credit Hours: 7 ($236.45)  
+Fees: $52  
+Total payment (after discount): &1,707.15  
 
 ## Notes
 
